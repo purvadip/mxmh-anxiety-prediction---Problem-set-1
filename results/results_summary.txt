@@ -1,0 +1,5 @@
+              model       ap  roc_auc  precision   recall       f1
+Logistic Regression 0.612787 0.633333   0.575342 0.583333 0.579310
+      Random Forest 0.640631 0.644630   0.560000 0.583333 0.571429
+            XGBoost 0.652933 0.638519   0.575342 0.583333 0.579310
+
