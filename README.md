@@ -22,6 +22,32 @@ The pipeline covers data cleaning, feature engineering, hyperparameter tuning, m
 
 ---
 
+## 🔬 Methodology
+
+### Models & Tuning
+| Model | Tuning Method | Key Hyperparameters |
+|:------|:------|:------|
+| Logistic Regression | `LogisticRegressionCV` | C in [0.001, 100], L2 penalty |
+| Random Forest | `RandomizedSearchCV` | n_estimators, max_depth, min_samples_split |
+| XGBoost | `RandomizedSearchCV` | learning_rate, max_depth, subsample, colsample |
+
+- Stratified 5-fold cross-validation with Average Precision scoring
+- Class weighting (`balanced`) to handle target imbalance
+
+### Data Cleaning
+- Removed outlier ages (outside 10 to 100 range)
+- Clipped listening hours to 0 to 24h
+- Median imputation for numeric features, mode for categorical
+- Encoded binary and ordinal variables
+- Excluded mental health score columns from features to prevent data leakage
+
+### Evaluation Metrics
+- **Threshold-independent:** Average Precision, ROC AUC
+- **Threshold-dependent (at 0.5):** Precision, Recall, F1 Score
+- **Visualization:** Precision-Recall curves for all models
+
+---
+
 ## 🏆 Key Results
 
 | Model | Avg Precision | ROC AUC | Precision | Recall | F1 Score |
@@ -34,83 +60,15 @@ The pipeline covers data cleaning, feature engineering, hyperparameter tuning, m
 
 ---
 
-## 📁 Project Structure
+## 📊 Top Feature Importances (Random Forest)
 
-```
-├── 📄 README.md                  ← You are here
-├── 📄 LICENSE                    ← MIT License
-├── 📄 requirements.txt           ← Python dependencies
-│
-├── 📂 notebooks/
-│   ├── 01_cleaning.ipynb         ← Data cleaning & feature engineering
-│   └── 02_modeling.ipynb         ← Model training, tuning & evaluation
-│
-├── 📂 src/
-│   └── modeling.py               ← Standalone modeling script
-│
-├── 📂 data/
-│   ├── raw/
-│   │   └── mxmh_survey_results.csv   ← Original survey data (736 rows)
-│   └── processed/
-│       └── mxmh_clean.csv            ← Cleaned dataset (735 rows)
-│
-└── 📂 results/
-    ├── results.csv                ← Model metrics (CSV)
-    ├── results.json               ← Model metrics (JSON)
-    └── results_summary.txt        ← Formatted summary table
-```
+The most influential predictors for anxiety prediction:
 
----
-
-## 🔬 Methodology
-
-### Data Cleaning
-- Removed outlier ages (outside 10 to 100 range)
-- Clipped listening hours to 0 to 24h
-- Median imputation for numeric features, mode for categorical
-- Encoded binary and ordinal variables
-- Excluded mental health score columns from features to prevent data leakage
-
-### Models & Tuning
-| Model | Tuning Method | Key Hyperparameters |
-|:------|:------|:------|
-| Logistic Regression | `LogisticRegressionCV` | C in [0.001, 100], L2 penalty |
-| Random Forest | `RandomizedSearchCV` | n_estimators, max_depth, min_samples_split |
-| XGBoost | `RandomizedSearchCV` | learning_rate, max_depth, subsample, colsample |
-
-- Stratified 5-fold cross-validation with Average Precision scoring
-- Class weighting (`balanced`) to handle target imbalance
-
-### Evaluation Metrics
-- **Threshold-independent:** Average Precision, ROC AUC
-- **Threshold-dependent (at 0.5):** Precision, Recall, F1 Score
-- **Visualization:** Precision-Recall curves for all models
-
----
-
-## 🚀 How to Reproduce
-
-```bash
-# 1. Clone the repository
-git clone https://github.com/<your-username>/anxiety-prediction-mxmh.git
-cd anxiety-prediction-mxmh
-
-# 2. Create virtual environment (recommended)
-python -m venv venv
-source venv/bin/activate        # macOS/Linux
-venv\Scripts\activate           # Windows
-
-# 3. Install dependencies
-pip install -r requirements.txt
-
-# 4. Run the pipeline
-#    Option A: Notebooks (recommended for exploration)
-jupyter notebook notebooks/01_cleaning.ipynb
-jupyter notebook notebooks/02_modeling.ipynb
-
-#    Option B: Script (for quick execution)
-python src/modeling.py
-```
+1. **Hours per day** - daily music listening duration
+2. **Age** - respondent's age
+3. **BPM** - preferred beats per minute
+4. **Genre frequencies** - how often specific genres are listened to
+5. **Streaming service** - primary platform used
 
 ---
 
@@ -123,18 +81,6 @@ python src/modeling.py
 | ML | scikit-learn, XGBoost |
 | Visualization | Matplotlib |
 | Environment | Jupyter Notebook |
-
----
-
-## 📊 Top Feature Importances (Random Forest)
-
-The most influential predictors for anxiety prediction:
-
-1. **Hours per day** - daily music listening duration
-2. **Age** - respondent's age
-3. **BPM** - preferred beats per minute
-4. **Genre frequencies** - how often specific genres are listened to
-5. **Streaming service** - primary platform used
 
 ---
 
